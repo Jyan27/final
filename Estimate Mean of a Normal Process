@@ -1,0 +1,28 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(0)
+true_mu = 10
+known_sigma = 2
+data = np.random.normal(true_mu, known_sigma, size=30)
+
+# Prior on mu: Normal(0, 5^2)
+prior_mu_mean = 0
+prior_mu_var = 25
+
+# Likelihood variance known: update posterior mean and variance
+n = len(data)
+likelihood_var = known_sigma ** 2
+
+post_mu_var = 1 / (1/prior_mu_var + n/likelihood_var)
+post_mu_mean = post_mu_var * (prior_mu_mean/prior_mu_var + np.sum(data)/likelihood_var)
+
+samples = np.random.normal(post_mu_mean, np.sqrt(post_mu_var), size=10000)
+
+plt.hist(samples, bins=30, color='teal', edgecolor='black', density=True)
+plt.title("Posterior Distribution of Production Time Mean")
+plt.xlabel("Mean Time")
+plt.ylabel("Density")
+plt.show()
+
+print("Estimated mean production time:", np.mean(samples))
